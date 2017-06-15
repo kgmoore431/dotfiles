@@ -1,0 +1,32 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"ApacheConf.tmLanguage",
+		"Bash Build System",
+		"DashDoc",
+		"GPG",
+		"Markdown Preview",
+		"nginx",
+		"Package Control",
+		"Plist Binary",
+		"Pretty JSON",
+		"Pretty YAML",
+		"Puppet",
+		"SublimeLinter",
+		"SublimeLinter-annotations",
+		"SublimeLinter-contrib-puppet-lint",
+		"SublimeLinter-flake8",
+		"SublimeLinter-json",
+		"SublimeLinter-pep8",
+		"SublimeLinter-pylint",
+		"SublimeLinter-pyyaml",
+		"SublimeLinter-ruby",
+		"SublimeLinter-shellcheck",
+		"View In Browser",
+		"YAML Nav"
+	]
+}
