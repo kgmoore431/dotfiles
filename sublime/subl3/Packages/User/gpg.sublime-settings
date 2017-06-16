@@ -1,4 +1,5 @@
 {
+	"first_run": false,
 	"gpg_command": "gpg2",
 	"verbosity": 2
 }
