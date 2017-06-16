@@ -1,0 +1,5 @@
+alias gr-home="cd ${GR_HOME}"
+alias jarvis="cd ${GR_HOME}/consultingmd || cd ${GR_HOME}/ConsultingMD || cd ${GR_HOME}/jarvis"
+alias eng="cd ${GR_HOME}/engineering"
+alias ter="cd ${GR_HOME}/terrorform"
+alias dpw="cd ${GR_HOME}/DPW"

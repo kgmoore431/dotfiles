@@ -1,0 +1,283 @@
+# Set architecture flags
+export ARCHFLAGS="-arch x86_64"
+export GR_HOME="${HOME}/src/grnds/"
+export GR_USERNAME=${USER}
+export GR_ONBOARD="${HOME}/Box Sync/Onboarding"
+export GR_GPGKEY_ADDRESS="kevin@grandrounds.com"
+export IPSEC_SECRETS_FILE=/usr/local/etc/ipsec.secrets
+export KEY_SUFFIX="grandrounds.com"
+export GIT_ORG="consultingmd"
+export INITIALS="KGM"
+
+
+
+# export IT_GROUP="-r kevin@grandrounds.com -r evan.zavadil@grandrounds.com -r ben.fowler@grandrounds.com -r jessica.cobos@grandrounds.com -r caleb.oconnell@grandrounds.com"
+
+# Make History last forever - keep history in folders by Y/M/Day_host
+# Thanks to - https://twitter.com/michaelhoffman https://twitter.com/michaelhoffman/status/639178145673932800
+mkdir -p "${HOME}/.history/$(date -u +%Y/%m/)"
+HOSTNAME_SHORT=`hostname -s`
+export PROMPT_COMMAND='history -a'
+HISTFILE="${HOME}/.history/$(date -u +%Y/%m/%d.%H.%M.%S)_${HOSTNAME_SHORT}_$$"
+HISTSIZE=
+HISTFILESIZE=
+
+histgrep () {
+    grep -ir "$@" ~/.history
+    history | grep -i "$@"
+}
+export -f histgrep
+
+export GREP_OPTIONS='--color=auto'
+export GREP_COLOR='1;35;40'
+
+HOMEDIR=~/
+
+activate() {
+    source ~/.virtualenv/${1}/bin/activate
+}
+
+function prefix_path { # add a prefix to the path if it exists and isn't already in the path {{{
+    [[ ! "$PATH" =~ "$1" && -e "$1" ]] && export PATH="${1}:${PATH}"
+} # }}}
+
+function suffix_path { # add a suffix to the path if it exists and isn't already in the path {{{
+    [[ ! "$PATH" =~ "$1" && -e "$1" ]] && export PATH="${PATH}:${1}"
+} # }}}
+
+prefix_path "/usr/local/bin"
+prefix_path "${HOME}/bin"
+[[ -d "/usr/local/mysql/bin" ]] && prefix_path "/usr/local/mysql/bin"
+[[ -d "${HOME}/.rvm/bin" ]] && prefix_path "${HOME}/.rvm/bin"
+[[ -d "${HOME}/Library/Android/sdk/platform-tools" ]] && suffix_path "${HOME}/Library/Android/sdk/platform-tools"
+
+# Load .bashrc if it exists
+test -f ~/.bashrc && source ~/.bashrc
+
+for file in $(\ls -1 ~/.profile.d/*.sh); do
+  source ${file};
+done
+
+test -f $GR_HOME/engineering/bash/tracker-env.sh && source $GR_HOME/engineering/bash/tracker-env.sh
+
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagaced
+
+alias ll='ls -al'
+alias ltr='ls -altr'
+alias ltrd='ls -altr |tail -10'
+alias resource='source ~/.bash_profile'
+
+alias kgnow='echo "${INITIALS} `date +"%F %T"` <-- On clipboard"; echo "${INITIALS} `date +"%F %T"`" |pbcopy'
+alias devsrc='for i in $(find ${GR_HOME}/engineering/bash -type f -o -type l); do source $i;done'
+alias assume_new='gr_assume_role_newacct \${new_acct_id}'
+
+
+function find_function {
+  shopt -s extdebug
+  declare -F "$1"
+  shopt -u extdebug
+}
+
+
+
+get_newusers() {
+    newusers="$(gam.py info group newusers | grep member: | cut -d' ' -f3)"
+    for i in ${newusers}; do
+        gam.py info user $i noaliases nolicenses noschemas | egrep "User:|Last login"
+    done
+}
+
+# purge_newusers() {
+#     newusers="$(gam.py info group newusers | grep member: | cut -d' ' -f3)"
+#     for i in ${newusers}; do
+#         gam.py update group newusers remove member ${i}
+#     done
+# }
+
+
+#API Token management
+
+export ALL_TOKENS=$(find ${HOME}/.api_tokens -maxdepth 1 -type f -name "${GR_USERNAME}-*.gpg" | perl -pe "s|^${HOME}/.api_tokens/${GR_USERNAME}-(.*)\.gpg|\1|g" | xargs echo)
+
+
+function gr_load_token {
+  local env_file="${HOME}/.api_tokens/${GR_USERNAME}-${1}.gpg"
+  if [ "$1" = '-h' -o "$1" = '-?' ]; then
+    echo "Usage: $FUNCNAME [ -h ] [ token_to_use ]" 1>&2
+  elif [ ! -f $env_file ]
+  then
+    echo "Not found: token file $env_file" 1>&2
+  else
+    echo ${1}
+    # export AWS_ENVIRONMENT=$1
+    source /dev/stdin <<-EOF
+$(gpg --no-tty --quiet -o - ${env_file})
+EOF
+  fi
+}
+
+_gr-token-completer()
+{
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    COMPREPLY=( $(compgen -W "$ALL_TOKENS" -- $cur) )
+}
+complete -F _gr-token-completer gr_load_token
+
+
+function gr-whodunit {
+    if [[ `uname` == 'Darwin' ]]; then
+       FINGERPRINT=`pbpaste`
+    else
+       FINGERPRINT=`xsel -b`
+    fi
+    find ${GR_HOME}/engineering/ssh/ -name '*.pub' -type f -exec ssh-keygen -lf {} \; |grep -i "${FINGERPRINT}"
+}
+
+
+
+export GPG_TTY=`tty`
+
+# Old version of function that is not accurate\
+
+# function encrypt_control {
+#     RECIPIENTS="${GR_CONTROL_GROUP}"
+#     for file in "$@"; do
+#         gpg -e ${RECIPIENTS} --trust-model always "$file"
+#     done
+# }
+# export -f encrypt_control
+
+
+
+function send_creds {
+    if [[ $# -ne 3 ]]; then
+        echo "error: usage [filename user_email cred_type]"
+        return 1
+    fi
+    file="$1"
+    user_email="$2"
+    cred_type="$3"
+
+    gpg -q -e -r "${GR_GPGKEY_ADDRESS}" -r "${user_email}" --trust-model always "${file}"
+    if [[ $? -ne 0 ]]; then
+        echo ""
+        echo "ERROR - Encrypting credentials"
+        echo ""
+        return 2
+    fi
+    echo "Emailing credentials to: ${user_email}"
+    uuencode ${file}.gpg ${file}.gpg | mail -b "${GR_GPGKEY_ADDRESS}"  -s "${cred_type} Credentials" ${user_email}
+}
+
+
+## AWS Cloudformation helpers
+
+# function get_cfn_json {
+# Replaced by code in engineering/bin
+#     for stack in `aws cloudformation list-stacks | egrep -B6 'CREATE_COMPLETE|UPDATE_COMPLETE'|grep 'TemplateDescription' | awk '{print $NF}'|tr -d "\","`; do
+#         aws s3 cp s3://grnds-${AWS_ENVIRONMENT}-cloud-formation-stack-json/ /tmp/ --recursive --exclude "*" --include "${stack}*";
+#     done
+# }
+
+
+function get_cfn_stack_error {
+    if [[ $# -ne 1 ]]; then
+        echo "error: usage get_cfn_stack_error [stackname]"
+        return 1
+    fi
+    mystack="${1}";
+    if [[ `uname` == 'Darwin' ]]; then
+        mybase='base64 -D';
+    else
+        mybase='base64 -d';
+    fi;
+    aws cloudformation describe-stack-events --stack-name ${mystack} | grep 'WaitCondition received failed message' |cut -f3 -d:|cut -f2 -d' '|tr -d "'"|${mybase}|gzip -d
+}
+
+
+#Removes a host entry line from known_hosts by line number
+function unknow {
+    if [[ -n "$1" ]]; then
+        sed -i bak "$1d" ~/.ssh/known_hosts
+    else
+        echo "err - need line number to unknow"
+    fi
+}
+
+
+### Git Stuff ###
+# Do a git pull for all git repos  in a directory
+function pull_all {
+    for x in $(\ls -1d */); do
+        if [[ -d $x/.git ]]; then
+            pushd $x
+            pwd
+            git pull origin
+            popd
+        fi
+    done
+}
+
+function all-repo-clean { # clean out merged branches {{{
+  for i in */.git/; do
+    pushd ${i%.git/} > /dev/null 2> /dev/null
+    echo $(pwd)
+    git pull
+    git branch --merged | grep -v '^\*' | grep -v 'rc/branch/'| grep -vE '^\s+master\s*$' | grep -vE '^\s+gh-pages\s*$'
+    popd > /dev/null
+  done
+} # }}}
+
+
+function parse_git_branch () {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+RED="\033[0;31m"
+YELLOW="\033[0;33m"
+GREEN="\033[0;32m"
+NO_COLOR="\033[0m"
+LTBLUE="\033[1;34m"
+
+function git_color {
+  local git_status="$(git status 2> /dev/null)"
+
+  if [[ $git_status =~ "working tree clean" ]]; then
+    echo -e $GREEN
+  elif [[ $git_status =~ "Your branch is ahead of" ]]; then
+    echo -e $YELLOW
+  elif [[ $git_status =~ "nothing added to commit but untracked" ]]; then
+    echo -e $YELLOW
+  elif [[ $git_status =~ "Changes to be committed" ]]; then
+    echo -e $YELLOW
+  elif [[ $git_status =~ "Changes not staged for commit" ]]; then
+    echo -e $RED
+  else
+    echo -e $NO_COLOR
+  fi
+}
+### Git Stuff ###
+
+#### bash auto complete extensions
+
+# AWS CLI
+complete -C aws_completer aws
+
+# brew bash completion for git
+if [ -f `brew --prefix`/etc/bash_completion ]; then
+    . `brew --prefix`/etc/bash_completion
+fi
+
+#### bash auto complete extensions
+
+# Set command prompt to include branch names & Status when in git folder
+PS1="\\[\[$LTBLUE\]\h\[$NO_COLOR\]:\w\[\$(git_color)\]\$(parse_git_branch)\[$NO_COLOR\]\$ "
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+# The next line updates PATH for the Google Cloud SDK.
+[[ -s '/Users/kmoore/google-cloud-sdk/path.bash.inc' ]] && source '/Users/kmoore/google-cloud-sdk/path.bash.inc'
+
+# The next line enables shell command completion for gcloud.
+[[ -s '/Users/kmoore/google-cloud-sdk/completion.bash.inc' ]] && source '/Users/kmoore/google-cloud-sdk/completion.bash.inc'
