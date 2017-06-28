@@ -5,6 +5,7 @@
 	],
 	"installed_packages":
 	[
+		"ANSIescape",
 		"ApacheConf.tmLanguage",
 		"Bash Build System",
 		"DashDoc",
@@ -28,6 +29,7 @@
 		"SublimeLinter-pyyaml",
 		"SublimeLinter-ruby",
 		"SublimeLinter-shellcheck",
+		"Terraform",
 		"View In Browser",
 		"YAML Nav"
 	]
