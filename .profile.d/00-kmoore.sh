@@ -3,25 +3,22 @@
 # Update the following to personalize your bash_profile
 # this file will be automatically be sourced via /Users/kmoore/.bash_profile
 
-## GRNDS
+## GPG Email
 #The email address associated with your GPG key
-export GR_GPGKEY_ADDRESS="kevin@grandrounds.com"
+export CORP_GPGKEY_ADDRESS="kevin@aurora.tech"
 
 export INITIALS="KGM"
 
 #Folder path to where you will be checking out git projects
-export GR_HOME="${HOME}/src/grnds"
-
-#Path to your Box sync Onboarding folder
-export GR_ONBOARD="${HOME}/Box Sync/Onboarding"
+export CORP_HOME="${HOME}/src/aurora"
 
 #Path to your ipsec secrets file
 export IPSEC_SECRETS_FILE=/usr/local/etc/ipsec.secrets
 
-export GR_USERNAME=${USER}
+export CORP_USERNAME="kevin"
 
-export KEY_SUFFIX="grandrounds.com"
-export GIT_ORG="consultingmd"
+export KEY_SUFFIX="aurora.tech"
+export GIT_ORG="[GITORG]"
 
 # Set architecture flags for Ruby RVM to play nice
 export ARCHFLAGS="-arch x86_64"

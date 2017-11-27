@@ -2,7 +2,7 @@
 
 # NOTE: Make sure your system is setup for the mail cli app to be able to use
 #   your gmail credentials and mail server config
-#   also requires that $GR_GPGKEY_ADDRESS be declared in your bash profile
+#   also requires that $CORP_GPGKEY_ADDRESS be declared in your bash profile
 #   See also: http://eng.grandrounds.com/blog/2015/06/19/securely-transmitting-credentials-from-the-commandline-with-osx-and-gmail/
 
 function send_creds {
@@ -14,7 +14,7 @@ function send_creds {
     user_email="$2"
     cred_type="$3"
 
-    gpg -q -e -r "${GR_GPGKEY_ADDRESS}" -r "${user_email}" --trust-model always "${file}"
+    gpg -q -e -r "${CORP_GPGKEY_ADDRESS}" -r "${user_email}" --trust-model always "${file}"
     if [[ $? -ne 0 ]]; then
         echo ""
         echo "ERROR - Encrypting credentials"
@@ -22,5 +22,5 @@ function send_creds {
         return 2
     fi
     echo "Emailing credentials to: ${user_email}"
-    uuencode ${file}.gpg ${file}.gpg | mail -b "${GR_GPGKEY_ADDRESS}"  -s "${cred_type} Credentials" "${user_email}"
+    uuencode ${file}.gpg ${file}.gpg | mail -b "${CORP_GPGKEY_ADDRESS}"  -s "${cred_type} Credentials" "${user_email}"
 }

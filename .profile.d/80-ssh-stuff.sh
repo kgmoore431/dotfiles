@@ -1,5 +1,4 @@
 
-
 #Removes a host entry line from known_hosts by line number
 function unknow {
     if [[ -n "$1" ]]; then

@@ -3,7 +3,7 @@
 #Encrypt / decrypt functions
 
 function encrypt_eng {
-    RECIPIENTS=$(find "${GR_HOME}engineering/gpg/public/dev-ops" -type f -exec basename {} \;| sed -e's/^/-r /' | tr '\n' ' ' | sed -e's/.pub//g')
+    RECIPIENTS=$(find "${CORP_HOME}engineering/gpg/public/dev-ops" -type f -exec basename {} \;| sed -e's/^/-r /' | tr '\n' ' ' | sed -e's/.pub//g')
     for file in "$@"; do
         # shellcheck disable=SC2086
         gpg -e ${RECIPIENTS} --trust-model always "$file"
@@ -14,7 +14,7 @@ export -f encrypt_eng
 
 
 function encrypt_analyst {
-    RECIPIENTS=$(find "${GR_HOME}analytics/credentials/gpg/analyst" -type f -exec basename {} \;| sed -e's/^/-r /' | tr '\n' ' ' | sed -e's/.pub//g')
+    RECIPIENTS=$(find "${CORP_HOME}analytics/credentials/gpg/analyst" -type f -exec basename {} \;| sed -e's/^/-r /' | tr '\n' ' ' | sed -e's/.pub//g')
     for file in "$@"; do
         # shellcheck disable=SC2086
         gpg -e ${RECIPIENTS} --trust-model always "$file"

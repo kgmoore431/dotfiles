@@ -11,6 +11,12 @@ HISTFILE="${HOME}/.history/$(date -u +%Y/%m/%d.%H.%M.%S)_${HOSTNAME_SHORT}_$$"
 HISTSIZE=
 HISTFILESIZE=
 
+if [[ `uname` == 'Darwin' ]]; then
+	# OSX Sierra & Later have a built in session history mgmt that conflicts with our schema
+	# if we're on OSX disable the system history magic 
+	touch "${HOME}/.bash_sessions_disable"
+fi
+
 #Searches through our heirarchal history schema as well as current shell history
 histgrep () {
     grep -ir "$@" ~/.history
