@@ -1,5 +1,5 @@
 {
-	"first_run": false,
-	"gpg_command": "gpg2",
-	"verbosity": 2
+	"gpg.command": "gpg2",
+	"gpg.readme_shown": true,
+	"gpg.verbosity": 2
 }

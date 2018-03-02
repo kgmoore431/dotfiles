@@ -6,12 +6,15 @@
 	"installed_packages":
 	[
 		"ANSIescape",
-		"ApacheConf.tmLanguage",
+		"ApacheConf",
 		"Bash Build System",
 		"DashDoc",
 		"GPG",
+		"HTML-CSS-JS Prettify",
+		"Javascript Beautify",
 		"Markdown Preview",
 		"MarkdownEditing",
+		"Minify",
 		"Neon Color Scheme",
 		"nginx",
 		"Package Control",
