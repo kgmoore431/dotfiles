@@ -354,6 +354,7 @@ function pip3_install() {
 function do_sys_pip_modules() {
     print_header "Installing pip modules"
     pip_modules=(pip requests virtualenv pep8 flake8)
+
     pip_install "${pip_modules[*]}"
     pip3_modules=(pip pep8 flake8 boto3 passlib python-gnupg)
     pip3_install "${pip3_modules[*]}"
@@ -401,7 +402,7 @@ function do_configure_git() {
     print_header "Configuring git"
 
     echo "Getting key fingerprint for your ${email_addy} gpg key"
-    my_key=($(gpg --list-secret-keys --with-fingerprint --with-colons "${email_addy}" 2>/dev/null |grep fpr:|cut -d':' -f10 ))
+    my_key=($(gpg --list-secret-keys --with-fingerprint --with-colons "${email_addy}" 2>/dev/null |grep -A1 sec:u|grep fpr:|cut -d':' -f10 ))
 
     if [[ "${#my_key[@]}" -eq 1 ]]; then
         # Found one matching gpg fingerprint - setup user for signed commits
@@ -410,6 +411,13 @@ function do_configure_git() {
 
         echo "Don't forget to add your gpg key fingerprint to your github account"
         echo "my key fingerprint= ${my_key[0]}"
+
+        if [[ "${platform}" == 'Darwin' ]]; then
+            echo "gpg --export --armor ${email_addy} |pbcopy"
+        else
+            echo "gpg --export --armor ${email_addy} | xsel --clipboard --input"
+        fi
+
         # echo "-- TODO Link to docs on git + gpg ----"
         echo ""
 
@@ -417,7 +425,7 @@ function do_configure_git() {
         # Found multiple keys - warn user and skip signed commits
         echo "Uh Oh - couldn't ID a canonical gpg key for you.  We'll setup git without commit signing for now..."
         echo "Check your gpg keychain and make sure you have a single GPG key associated with your email"
-        echo " gpg --list-secret-keys --with-fingerprint --with-colons ${email_addy} 2>/dev/null |grep fpr:|cut -d':' -f10"
+        echo " gpg --list-secret-keys --with-fingerprint --with-colons ${email_addy} 2>/dev/null |grep -A1 sec:u|grep fpr:|cut -d':' -f10"
         echo "To Manually configure git signing use:"
         echo "    git config --global user.signingkey <your-key-fingerprint>"
         echo "    git config --global commit.gpgsign true"
