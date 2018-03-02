@@ -25,7 +25,8 @@ export -f encrypt_analyst
 
 function get_control_group {
     # fetch keys from published control-group list
-    KEYS=$(curl -s https://consultingmd.github.io/dangernoodle/control-group | awk '{print $1}')
+    # KEYS=$(curl -s https://consultingmd.github.io/dangernoodle/control-group | awk '{print $1}')
+    KEYS="50D7A7A641A7C552EAA98321AE572A7E06790867 3DDFFB983A5B88A4D22A45E0851E680CA0B79D30"
     # add -r's and single-line them
     # shellcheck disable=SC2086
     RECIPS=$(perl -pe 's/\b(\w+)\b/-r $1/g' <<< $KEYS)
@@ -34,12 +35,16 @@ function get_control_group {
 
 function get_it_group {
     # fetch keys from published it-group list
-    KEYS=$(curl -s https://consultingmd.github.io/dangernoodle/it-group | awk '{print $1}')
+    # KEYS=$(curl -s https://consultingmd.github.io/dangernoodle/it-group | awk '{print $1}')
+    KEYS="50D7A7A641A7C552EAA98321AE572A7E06790867 3DDFFB983A5B88A4D22A45E0851E680CA0B79D30"
+
     # add -r's and single-line them
     # shellcheck disable=SC2086
     RECIPS=$(perl -pe 's/\b(\w+)\b/-r $1/g' <<< $KEYS)
     echo "${RECIPS}"
 }
+
+export -f get_it_group
 
 function encrypt_control {
     RECIPIENTS="$(get_control_group)"

@@ -12,6 +12,10 @@ export INITIALS="KGM"
 #Folder path to where you will be checking out git projects
 export CORP_HOME="${HOME}/src/aurora"
 
+
+#Folder path for shared onboarding docs
+export CORP_ONBOARD="/Users/kmoore/Aurora/Onboarding"
+
 #Path to your ipsec secrets file
 export IPSEC_SECRETS_FILE=/usr/local/etc/ipsec.secrets
 

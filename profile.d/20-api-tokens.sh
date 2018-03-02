@@ -15,8 +15,7 @@ function my_load_token {
   else
     echo ${1}
     # export AWS_ENVIRONMENT=$1
-    source /dev/stdin <<-EOF
-$(gpg --no-tty --quiet -o - ${env_file})
+    source /dev/stdin <<< $(gpg --no-tty --quiet -o - ${env_file})
 EOF
   fi
 }
