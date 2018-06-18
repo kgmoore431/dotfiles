@@ -14,23 +14,19 @@ function warehouse-environment {
 }
 
 function aws-environment {
-  local env_file="${HOME}/.aws-creds/${GR_USERNAME}-${1}.gpg"
-  if [ -z "$1" ];
-  then
-    echo ${AWS_ENVIRONMENT:-'Provide an argument to set it'}
-  elif [ "$1" = '-h' -o "$1" = '-?' ] ;
-  then
-    echo "Usage: $0 [ -h ] [ environment_to_use ]" 1>&2
-  elif [ ! -f $env_file ]
-  then
-    echo "Not found: credential file $env_file" 1>&2
-  else
-    export AWS_ENVIRONMENT=$1
-    source /dev/stdin <<-EOF
+    local env_file="${HOME}/.aws-creds/${GR_USERNAME}-${1}.gpg"
+    if [ -z "$1" ]; then
+        echo ${AWS_ENVIRONMENT:-'Provide an argument to set it'}
+    elif [ "$1" = '-h' -o "$1" = '-?' ]; then
+        echo "Usage: $0 [ -h ] [ environment_to_use ]" 1>&2
+    elif [ ! -f $env_file ]; then
+        echo "Not found: credential file $env_file" 1>&2
+    else
+        export AWS_ENVIRONMENT=$1
+        source /dev/stdin <<-EOF
 $(gpg --use-agent --no-tty --quiet -o - ${env_file})
 EOF
     warehouse-environment
-  fi
 }
 
 alias gr-aws-environment=aws-environment
