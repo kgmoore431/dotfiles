@@ -5,10 +5,9 @@ alias ltr='ls -altr'
 alias ltrd='ls -altr |tail -10'
 alias resource='source ~/.bash_profile'
 alias ops='cd ${CORP_HOME}/it-ops'
+alias tf='terraform'
 
-alias vpne='sudo openvpn --config /etc/openvpn/vpn-east.ovpn'
-alias vpnw='sudo openvpn --config /etc/openvpn/vpn-west.ovpn'
-
+alias speed_check='speedtest --server 1749'
 alias chromecode='gam user chrome show backupcodes'
 
 lcase_inits="$(tr [:upper:] [:lower:] <<< ${INITIALS})"
