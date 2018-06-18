@@ -326,8 +326,26 @@ function do_install_apt_pkgs_lnx() {
 }
 
 
+function check_pip() {
+    if [[ ! $(which pip) ]]; then
+        if [[ ! -e "get-pip.py" ]]; then
+            curl "https://bootstrap.pypa.io/get-pip.py" -o get-pip.py
+        sudo python get-pip.py
+    fi
+}
+
+function check_pip3() {
+    if [[ ! $(which pip3) ]]; then
+        if [[ ! -e "get-pip.py" ]]; then
+            curl "https://bootstrap.pypa.io/get-pip.py" -o get-pip.py
+        sudo python3 get-pip.py
+    fi
+
+}
+
 # pip install list of modules
 function pip_install() {
+    check_pip
     module_list="$*"
     # SC-NOTE: We want the array expansion below, so not quoting.
     # Disable 2068 - https://github.com/koalaman/shellcheck/wiki/SC2068
