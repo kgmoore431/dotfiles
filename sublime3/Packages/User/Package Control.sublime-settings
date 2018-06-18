@@ -22,6 +22,7 @@
 		"Pretty JSON",
 		"Pretty YAML",
 		"Puppet",
+		"sublime-terraform",
 		"SublimeLinter",
 		"SublimeLinter-annotations",
 		"SublimeLinter-contrib-puppet-lint",
@@ -35,5 +36,9 @@
 		"Terraform",
 		"View In Browser",
 		"YAML Nav"
+	],
+	"repositories":
+	[
+		"https://github.com/tmichel/sublime-terraform"
 	]
 }
