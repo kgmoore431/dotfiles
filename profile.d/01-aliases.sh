@@ -13,6 +13,7 @@ alias chromecode='gam user chrome show backupcodes'
 
 lcase_inits="$(tr [:upper:] [:lower:] <<< ${INITIALS})"
 
-alias ${lcase_inits}now='echo "${INITIALS} `date +"%F %T"` <-- On clipboard"; echo "${INITIALS} `date +"%F %T"`" |pbcopy'
+alias ${lcase_inits}now='echo "${INITIALS} `date +"%F %H:%M %Z"` <-- On clipboard"; echo "${INITIALS} `date +"%F %H:%M %Z"`" |pbcopy'
+alias kgnow="${lcase_inits}now"
 alias devsrc='for i in $(find ${CORP_HOME}/engineering/bash -type f -o -type l); do source $i;done'
 alias opssrc='for i in $(find ${CORP_HOME}/ops-tools/bash/grnds-profile.d/ -type f -o -type l); do source $i;done'

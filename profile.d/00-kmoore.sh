@@ -14,7 +14,7 @@ export CORP_HOME="${HOME}/src/aurora"
 
 
 #Folder path for shared onboarding docs
-export CORP_ONBOARD="/Users/kmoore/Aurora/Onboarding"
+export CORP_ONBOARD="/Volumes/GoogleDrive/My Drive/"
 
 #Path to your ipsec secrets file
 export IPSEC_SECRETS_FILE=/usr/local/etc/ipsec.secrets
@@ -31,3 +31,4 @@ export ARCHFLAGS="-arch x86_64"
 
 ## Feel free to add your own shell customizations here
 
+export EDITOR="$(which vim)"

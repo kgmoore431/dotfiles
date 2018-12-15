@@ -13,13 +13,14 @@ HISTFILESIZE=
 
 if [[ `uname` == 'Darwin' ]]; then
 	# OSX Sierra & Later have a built in session history mgmt that conflicts with our schema
-	# if we're on OSX disable the system history magic 
+	# if we're on OSX disable the system history magic
 	touch "${HOME}/.bash_sessions_disable"
 fi
 
 #Searches through our heirarchal history schema as well as current shell history
 histgrep () {
-    grep -ir "$@" ~/.history
+    grep -i "$@" $(gfind ~/.history -type f -printf "%p\n" | sort -n)
+    # grep -ir "$@" ~/.history
     history | grep -i "$@"
 }
 export -f histgrep
