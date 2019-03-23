@@ -24,7 +24,7 @@ function all-repo-clean { # clean out merged branches {{{
 
 
 function parse_git_branch () {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
 RED="\033[0;31m"
@@ -57,9 +57,8 @@ if [ -f `brew --prefix`/etc/bash_completion ]; then
     . `brew --prefix`/etc/bash_completion
 fi
 
-
 # Set command prompt to include branch names & Status when in a git folder
-PS1="\\[\[$LTBLUE\]\h\[$NO_COLOR\]:\w\[\$(git_color)\]\$(parse_git_branch)\[$NO_COLOR\]\$ "
+PS1="\\[\[$LTBLUE\]\h\[$NO_COLOR\]:\w\n\[\$(git_color)\]\$(parse_git_branch)\[$NO_COLOR\]\$ "
 
 
 ### Git Stuff ###
