@@ -7,6 +7,11 @@ alias resource='source ~/.bash_profile'
 alias ops='cd ${CORP_HOME}/it-ops'
 alias web='cd ${CORP_HOME}/aurora-web'
 
+HISTORY_SOURCE="/Volumes/GoogleDrive/My Drive/cli-history/"
+alias push_history='rsync -rv ~/.history/ "${HISTORY_SOURCE}"'
+alias pull_history='rsync -rv  "${HISTORY_SOURCE}" ~/.history/'
+# alias get_all_aurorans='${CORP_HOME}/it-ops/gam-script/group-memberlist.sh aurora-all |grep -v group |grep aurora.tech |awk \'{$1=$1};1\'|sort -u |pbcopy'
+
 function gamfiles () {
      gam user "${1}" show filelist todrive id alternatelink name owners shared
 }
